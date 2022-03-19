@@ -11,5 +11,9 @@ and is embedded in the CLimate INTelligence project.
 
 # Structure
 data (package): Modules for preprocessing and manipulating data
-resources (folder): Datasets for analysis. Currently Reanalysis-ERA5 and GESLA Sea-Level Dataset.
+
+# Note
+This repository does not include the resource folder. In order for everything to run smoothly, 
+include the resource folder containing ERA5 and GESLA Dataset. This folder can be sent to you upon request.
+You can download GESLA and ERA5 from their websites. 
 
