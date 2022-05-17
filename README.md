@@ -1,7 +1,7 @@
 # Estimating Extreme Storm Surges in the Baltic Sea via Machine Learning
 
 # Short Description
-The aim of this project is to estiamte extreme 
+The aim of this project is to estimate extreme 
 storm surges (>90%-percentiles) in the Baltic Sea via Machine Learning Algorithms like Random Forests, 
 simple Neural Networks and Generative Adversarial Networks. 
 We aim for not only a classification of storm surges but also a continous forecast of sea level height 
