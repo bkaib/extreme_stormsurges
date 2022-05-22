@@ -19,3 +19,7 @@ This repository does not include the resource folder. In order for everything to
 include the resource folder containing ERA5 and GESLA Dataset. This folder can be sent to you upon request.
 You can download GESLA and ERA5 from their websites. 
 
+# Predictors
+ERA5: Reanalysis data of Sea Level Pressure (SP\Pa), Total Precipitation (TP\) and zonal / meridional wind components at 10m height (u10\ms^-1, v10\ms^-1)
+
+

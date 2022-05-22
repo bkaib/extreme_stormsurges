@@ -1,7 +1,3 @@
-
-
-
-
 input_train_file="complete_output.npy"
 target_train_file="s2.npy"
 ioptpredict=0
@@ -30,7 +26,7 @@ print(nclass)
 clf = RandomForestClassifier(n_estimators=100,class_weight="balanced",oob_score=True,max_depth=max_depth,random_state=0)
 clf.fit(x, iy)
 print(clf.feature_importances_)
-np.save('importances',clf.feature_importances_)
+np.save('importances', clf.feature_importances_)
 
 if ioptpredict==1:
 	myz=clf.predict(z)
