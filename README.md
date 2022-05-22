@@ -12,6 +12,7 @@ and is embedded in the CLimate INTelligence project.
 
 # Structure
 data (package): Modules for preprocessing and manipulating data including bash-scripts
+notebooks (folder): Contains all notebooks used while developing the packages. To run notebooks, place them to master_thesis folder.
 
 # Note
 This repository does not include the resource folder. In order for everything to run smoothly, 
