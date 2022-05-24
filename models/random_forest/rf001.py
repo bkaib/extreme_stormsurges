@@ -1,7 +1,7 @@
 from matplotlib.pyplot import tight_layout
 
 
-def run(): 
+def run(predictor="sp", percentile=0.95): 
     #---
     #  Modules
     #---
@@ -9,13 +9,16 @@ def run():
     import numpy as np
     from data import preprocessing
 
+    #---
+    # Initialize
+    #---
+    folder = "results/random_forest/rf001/" # Where to save results
+
     # ---
     # Preprocessing
     # ---
 
     # Get timeseries of predictor and predictand
-    percentile = 0.95
-    predictor = "sp"
     season = "winter"
     
     # Description of data
@@ -25,7 +28,7 @@ def run():
     print(f"Percentile Predictand: {percentile}")
     print(f"Predictors: {predictor} ")
     print(f"Seaon: {season}")
-    print("Preprocessing: preprocessing1, only one station selected")
+    print("Preprocessing / Region: preprocessing1, only one station selected")
 
     print("Start Preprocessing of Data\n\n")
 
@@ -82,6 +85,9 @@ def run():
     print(f"train_score: {train_score}")
     print(f"importances: {importances}")
 
+    np.save(f"{folder}importances_{predictor}", importances)
+    print(f"saved importances to : {folder}importances_{predictor}")
+
     # Confusion matrix
     #---
     # Format: 
@@ -102,9 +108,10 @@ def run():
 
     cfm_fig.show()
 
-    folder = "results/random_forest/rf001/"
-    fname = f"{folder}cf_matrix.jpg"
+    fname = f"{folder}cf_matrix_{predictor}.jpg"
     cfm_fig.savefig(fname)
+    print(f"saved cf matrix to : {fname}")
+
 
     # AUROC
     # Receiver Operating Characteristics & Area Under the Curve
@@ -130,8 +137,10 @@ def run():
     
     fig.show()
 
-    fname = f"{folder}AUROC.jpg"
+    fname = f"{folder}AUROC_{predictor}.jpg"
     fig.savefig(fname)
+    print(f"saved AUROC to : {fname}")
+
 
     print("End of Model run")
 
