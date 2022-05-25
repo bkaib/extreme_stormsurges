@@ -1,6 +1,4 @@
-from matplotlib.pyplot import tight_layout
-
-def run(predictor="sp", percentile=0.95,): 
+def run(predictor="sp", percentile=0.95): 
     #---
     #  Modules
     #---
@@ -84,8 +82,9 @@ def run(predictor="sp", percentile=0.95,):
     print(f"train_score: {train_score}")
     print(f"importances: {importances}")
 
-    np.save(f"{folder}importances_{predictor}", importances)
-    print(f"saved importances to : {folder}importances_{predictor}")
+    fname = f"importances_{predictor}{str(percentile)[-2:]}"
+    np.save(f"{folder}{fname}", importances)
+    print(f"saved importances to : {folder}{fname}")
 
     # Confusion matrix
     #---
@@ -95,21 +94,27 @@ def run(predictor="sp", percentile=0.95,):
     # Positive    False Negative, Right Positive
 
     from sklearn.metrics import confusion_matrix
-    from models.evaluation import plot_cf
+    from models import evaluation
 
     print("Show Confusion Matrix \n")
 
-    y_test_pred = model.predict(X_test)
-
-    cf_matrix = confusion_matrix(y_test, y_test_pred)
-
-    cfm_fig = plot_cf(cf_matrix)
-
+    cfm_fig = evaluation.plot_cf(model, X_test, y_test)
     cfm_fig.show()
 
-    fname = f"{folder}cf_matrix_{predictor}.jpg"
+    # Save CFM
+    fname = f"{folder}cf_matrix_{predictor}{str(percentile)[-2:]}.jpg"
     cfm_fig.savefig(fname)
     print(f"saved cf matrix to : {fname}")
+
+    # Calculate CFM-Metrics
+    import pickle
+    metrics = evaluation.cfm_metrics(model, X_test, y_test)
+    fname = f"cf_metrics_{predictor}{str(percentile)[-2:]}.pkl"
+
+    with open(f"{folder}{fname}", 'wb') as f:
+        pickle.dump(metrics, f)
+
+    print(f"saved cf metrics to : {fname}")
 
 
     # AUROC
@@ -136,7 +141,7 @@ def run(predictor="sp", percentile=0.95,):
     
     fig.show()
 
-    fname = f"{folder}AUROC_{predictor}.jpg"
+    fname = f"{folder}AUROC_{predictor}{str(percentile)[-2:]}.jpg"
     fig.savefig(fname)
     print(f"saved AUROC to : {fname}")
 
@@ -163,13 +168,14 @@ def optimization(percentile=0.95):
     # Optimization: Hyperparameters
     #---
     from data import preprocessing
+    import numpy as np
     # Get timeseries of predictor and predictand
     predictors = ["sp", "tp", "u10", "v10",]
     season = "winter"
 
     # Hyperparameters to optimize
     param_name = ('min_samples_leaf', "max_depth", "min_samples_split", "n_estimators",)
-    param_range = (np.arange(0, 10, 1), np.arange(2, 15, 1), np.arange(2, 25, 2), np.arange(0, 140, 20),)
+    param_range = (np.arange(0, 10, 2), np.arange(5, 30, 5), np.arange(0, 25, 5), np.arange(100, 1200, 200),)
     hparams = dict(zip(param_name, param_range))
 
     for predictor in predictors:
@@ -195,6 +201,7 @@ def optimization(percentile=0.95):
 
         # Train-Test Split
         from sklearn.ensemble import RandomForestClassifier
+        from sklearn.model_selection import train_test_split
 
         X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0, test_size=0.25)
 
@@ -230,15 +237,25 @@ def optimization(percentile=0.95):
 
         print("All Validation Curves saved")
 
-def save_hp(model_run="rf002", percentile=0.95):
+def save_hp(hparams, predictor, model_run="rf002", percentile=0.95,):
     """
     Description: 
         Saves Hyperparameters manually read from validation curves in 
         master_thesis/results/random_forest/rf002.
+        Saves to "models/random_forest/hyperparameter/" 
+
+    Parameters:
+        hparams (tuple): Fixed values of hyperparameters ('min_samples_leaf', "max_depth", "min_samples_split", "n_estimators",)
+        predictor (str): Flag of predictor ["sp", "tp", "u10", "v10"]
+        model_run (str): Flag for model run. (Default:"rf002")
+        percentile (float): percentile of preprocessing used for validation curves (Defaults: 0.95)
+    
+    Returns:
+        None
     """
+    import pickle
     param_name = ('min_samples_leaf', "max_depth", "min_samples_split", "n_estimators",)
-    param_range = (3, 13, 12, 100,)
-    params = dict(zip(param_name, param_range))
+    params = dict(zip(param_name, hparams))
 
     folder = "models/random_forest/hyperparameter/"
     fname = f"{model_run}_{predictor}{str(percentile)[-2:]}.pkl"
