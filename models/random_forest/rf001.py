@@ -85,8 +85,9 @@ def run(predictor="sp", percentile=0.95):
     print(f"train_score: {train_score}")
     print(f"importances: {importances}")
 
-    np.save(f"{folder}importances_{predictor}", importances)
-    print(f"saved importances to : {folder}importances_{predictor}")
+    fname = f"importances_{predictor}{str(percentile)[-2:]}"
+    np.save(f"{folder}{fname}", importances)
+    print(f"saved importances to : {folder}{fname}")
 
     # Confusion matrix
     #---
@@ -104,7 +105,7 @@ def run(predictor="sp", percentile=0.95):
     cfm_fig.show()
 
     # Save CFM
-    fname = f"{folder}cf_matrix_{predictor}.jpg"
+    fname = f"{folder}cf_matrix_{predictor}{str(percentile)[-2:]}.jpg"
     cfm_fig.savefig(fname)
     print(f"saved cf matrix to : {fname}")
 
@@ -115,6 +116,9 @@ def run(predictor="sp", percentile=0.95):
 
     with open(f"{folder}{fname}", 'wb') as f:
         pickle.dump(metrics, f)
+
+    print(f"saved cf metrics to : {fname}")
+
 
     # AUROC
     # Receiver Operating Characteristics & Area Under the Curve
@@ -140,7 +144,7 @@ def run(predictor="sp", percentile=0.95):
     
     fig.show()
 
-    fname = f"{folder}AUROC_{predictor}.jpg"
+    fname = f"{folder}AUROC_{predictor}{str(percentile)[-2:]}.jpg"
     fig.savefig(fname)
     print(f"saved AUROC to : {fname}")
 
