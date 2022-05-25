@@ -87,7 +87,7 @@ def cfm_metrics(model, X_test, y_test, beta=0.5):
         y_test (np.array): Predictand of test data. Shape(time,)
         beta (float): Weight for measure of weighted accuracy. (Default:0.5) 
     Returns:
-        Set of metrics and figure of confusion matrix.
+        metrics (dict): Set of metrics.
     """
     # Modules
     from sklearn.metrics import confusion_matrix
@@ -108,11 +108,12 @@ def cfm_metrics(model, X_test, y_test, beta=0.5):
     fmeasure = (2 * precision * recall) / (precision + recall) # F-measure
 
     # Display metrics
-    names = ["tnr", "tpr", "gmean", "wacc", "precision", "recall", "fmeasure"]
-    values = [tnr, tpr, gmean, wacc, precision, recall, fmeasure]
-    
-    print("Metric values \n")
-    for i, name in enumerate(names):
-        print(f"{name}: {values[i]}")
+    names = ("tnr", "tpr", "gmean", "wacc", "precision", "recall", "fmeasure")
+    values = (tnr, tpr, gmean, wacc, precision, recall, fmeasure)
+    metrics = dict(zip(names, values))
 
-    return (tnr, tpr, gmean, wacc, precision, recall, fmeasure)
+    print("Metric values \n")
+    for key, value in metrics.items():
+        print(f"{key}: {value}")
+
+    return metrics

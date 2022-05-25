@@ -96,22 +96,25 @@ def run(predictor="sp", percentile=0.95):
     # Positive    False Negative, Right Positive
 
     from sklearn.metrics import confusion_matrix
-    from models.evaluation import plot_cf
+    from models import evaluation
 
     print("Show Confusion Matrix \n")
 
-    y_test_pred = model.predict(X_test)
-
-    cf_matrix = confusion_matrix(y_test, y_test_pred)
-
-    cfm_fig = plot_cf(cf_matrix)
-
+    cfm_fig = evaluation.plot_cf(model, X_test, y_test)
     cfm_fig.show()
 
+    # Save CFM
     fname = f"{folder}cf_matrix_{predictor}.jpg"
     cfm_fig.savefig(fname)
     print(f"saved cf matrix to : {fname}")
 
+    # Calculate CFM-Metrics
+    import pickle
+    metrics = evaluation.cfm_metrics(model, X_test, y_test)
+    fname = f"cf_metrics_{predictor}{str(percentile)[-2:]}.pkl"
+
+    with open(f"{folder}{fname}", 'wb') as f:
+        pickle.dump(metrics, f)
 
     # AUROC
     # Receiver Operating Characteristics & Area Under the Curve
