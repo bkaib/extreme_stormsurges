@@ -15,6 +15,7 @@ def map(data, lons, lats, tflag="", vmin=None, vmax=None):
     # Modules
     import matplotlib.pyplot as plt 
     import cartopy.crs as ccrs
+    import numpy as np
 
     # Reshape data to lat/lon
     nlat = len(lats)
@@ -36,13 +37,14 @@ def map(data, lons, lats, tflag="", vmin=None, vmax=None):
     if vmin == None or vmax == None:
         cbarticks = None
     else:
-        cbarticks = np.arange(vmin, vmax, (vmax-vmin)/5)
-    plt.colorbar(plot, shrink=.62,ticks=cbarticks)
+        cbarticks = np.arange(vmin, vmax, (vmax-vmin) / 5) # 5 ticks
+
+    plt.colorbar(plot, shrink=.62, ticks=cbarticks)
 
     ax.set_title(f"Dataset: {tflag}")
 
     return fig
-    
+
 def create_gif(figures, path, fps=1):
     """
     Description: 
