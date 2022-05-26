@@ -11,7 +11,9 @@ from data import era5_preprocessing
 
 from gesla import GeslaDataset
 
-#- Main
+#---
+#  Main Preprocesses
+#---
 def preprocessing1(season, predictor, percentile=0.95,):
     """
     Description:
@@ -132,3 +134,41 @@ def preprocessing1(season, predictor, percentile=0.95,):
     t = predictor_time
         
     return x, y, t
+
+#---
+# Information about preprocessed datasets
+#---
+def get_lonlats(range_of_years, subregion, season, predictor, preprocess):
+    """
+    Description:
+        Returns lats, lons of the already preprocessed ERA5 Predictor area.
+    Parameters:
+        range_of_years (str): Range of years, e.g. "1999-2008"
+        subregion (str): Subregion of the original ERA5 data, e.g. "lon-0530_lat7040”
+        season (str): winter or autumn
+        predictor (str): Predictor, either ["sp", "tp", "u10", "v10"]
+        preprocess (str): subfolder where data is stored, e.g. resources/era5/preprocess
+    Returns:
+        lats (np.array): latitudes
+        lons (np.array): longitudes
+    """
+    # Modules
+    from data import data_loader
+    
+    #---
+    # Load Predictors
+    #----
+    print(f"Load ERA5-Predictor: {predictor} in region: {subregion} for years: {range_of_years} in season: {season}")
+
+    # Load daily mean data for all predictors
+    dmean = data_loader.load_daymean_era5(
+        range_of_years=range_of_years, 
+        subregion=subregion, 
+        season=season, 
+        predictor=predictor,
+        preprocess=preprocess,  
+    )
+    lats = dmean.latitude.values
+    lons = dmean.longitude.values
+    
+    return(lats, lons)

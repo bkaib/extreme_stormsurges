@@ -74,6 +74,46 @@ def plot_cf(model, X_test, y_test,):
 
     return fig
 
+def importance_map(importance, lons, lats, tflag=""):
+    """
+    Description:
+        Plots importance of a predictor on a lat lon map.
+    Parameters:
+        importance (np.array): Importances from model classification. Shape:(features,)
+        lons (np.array): Longitudes of predictor importance
+        lats (np.array): Latitudes of predictor importance
+        tflag (str): Additional Title information
+    Returns:
+        fig: Figure of importance
+    """
+    # Modules
+    import matplotlib.pyplot as plt 
+    import cartopy.crs as ccrs
+
+    # Reshape importance to lat/lon
+    nlat = len(lats)
+    nlon = len(lons)
+    importance = importance.reshape(nlat, nlon)
+
+    # Adjust colorbar extremes
+    vmax = 0.5 * np.max(importance)
+
+    # Plot importance on lat/lon map
+    fig = plt.figure(tight_layout=True,)
+    ax = plt.axes(projection=ccrs.PlateCarree())
+    plot = ax.contourf(lons, lats, importance, 
+    transform=ccrs.PlateCarree(),
+    vmax=vmax,
+    )
+
+    ax.coastlines()
+
+    plt.colorbar(plot,)
+
+    ax.set_title(f"Importance {tflag}")
+
+    return fig
+
 #---
 # Metrics
 #---
