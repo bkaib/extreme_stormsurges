@@ -1,4 +1,4 @@
-def map(data, lons, lats, tflag=""):
+def map(data, lons, lats, tflag="", vmin=None, vmax=None):
     """
     Description:
         Plots predictor-data on a lat-lon map.
@@ -6,7 +6,9 @@ def map(data, lons, lats, tflag=""):
         data (np.array): dataset from predictors. Shape:(lat, lon).flatten()
         lons (np.array): Longitudes of predictor data
         lats (np.array): Latitudes of predictor data
-        tflag (str): Additional Title information
+        tflag (str): Additional Title information, (Defaults: "")
+        vmin (float): Minimum value for colorbar, (Defaults: None)
+        vmax (float): Maximum value for colorbar, (Defaults: None)
     Returns:
         fig: Figure of data
     """
@@ -19,19 +21,47 @@ def map(data, lons, lats, tflag=""):
     nlon = len(lons)
     data = data.reshape(nlat, nlon)
 
-    # Adjust colorbar extremes
-
     # Plot data on lat/lon map
     fig = plt.figure(tight_layout=True,)
     ax = plt.axes(projection=ccrs.PlateCarree())
+
     plot = ax.contourf(lons, lats, data, 
     transform=ccrs.PlateCarree(),
+    vmin=vmin,
+    vmax=vmax,
     )
 
     ax.coastlines()
 
-    plt.colorbar(plot,)
+    if vmin == None or vmax == None:
+        cbarticks = None
+    else:
+        cbarticks = np.arange(vmin, vmax, (vmax-vmin)/5)
+    plt.colorbar(plot, shrink=.62,ticks=cbarticks)
 
     ax.set_title(f"Dataset: {tflag}")
 
     return fig
+    
+def create_gif(figures, path, fps=1):
+    """
+    Description: 
+        Creates and saves a gif from a list of figures
+    Parameters:
+        figures (list): List of Figures with 2 Axes.
+        path (str): Path to save gif to.
+        fps (int): Frames per second for gif. (Defaults: 1)
+    Returns: 
+        None
+    """
+    import imageio
+    import numpy as np
+    images = []
+    for fig in figures:
+        fig.canvas.draw()       # draw the canvas, cache the renderer
+        image = np.frombuffer(fig.canvas.tostring_rgb(), dtype='uint8') # Convert to RGB values
+        image = image.reshape(fig.canvas.get_width_height()[::-1] + (3,)) # Reshape for gif
+
+        images.append(image)
+
+    imageio.mimsave(f'{path}.gif', images, fps=fps)
