@@ -9,15 +9,15 @@ def run(predictor="sp", percentile=0.95):
     #---
     # Initialize
     #---
-    folder = "results/random_forest/rf002/" # Where to save results
+    model_run = "rf002"
+    folder = f"results/random_forest/{model_run}/" # Where to save results
+    season = "winter"
 
     # ---
     # Preprocessing
     # ---
 
     # Get timeseries of predictor and predictand
-    season = "winter"
-    
     # Description of data
     print("Description \n")
     print("Model: Random Forest")
@@ -55,11 +55,20 @@ def run(predictor="sp", percentile=0.95):
     # Train-Test Split
     X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0, test_size=0.25)
 
-    # Setup Model
+    # Load Hyperparameters
+    import pickle
+    sfolder = "models/random_forest/hyperparameter/"
+    fname = f"{model_run}_{predictor}{str(percentile)[-2:]}.pkl"
 
+    with open(f"{sfolder}{fname}", 'rb') as f:
+        params = pickle.load(f)
+
+    # Fit the model
     model = RandomForestClassifier(criterion='gini',
-    n_estimators=91, #- nTrees 
-    max_depth=9, 
+    n_estimators=params["n_estimators"], #- nTrees 
+    max_depth=params["max_depth"], 
+    min_samples_leaf=params["min_samples_leaf"],
+    min_samples_split=params["min_samples_split"],
     random_state=0, # To compare results when changing hyperparameters
     class_weight="balanced",
     oob_score=True,
@@ -107,7 +116,6 @@ def run(predictor="sp", percentile=0.95):
     print(f"saved cf matrix to : {fname}")
 
     # Calculate CFM-Metrics
-    import pickle
     metrics = evaluation.cfm_metrics(model, X_test, y_test)
     fname = f"cf_metrics_{predictor}{str(percentile)[-2:]}.pkl"
 
