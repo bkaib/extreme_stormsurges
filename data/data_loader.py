@@ -4,7 +4,7 @@ import xarray as xr
 import pandas as pd
 
 #- Main
-def load_hourly_era5(range_of_years, subregion, season, predictor, preprocess):
+def load_hourly_era5(range_of_years, subregion, season, predictor, era5_import):
     """
     Description:
         Loads hourly ERA5 Data for a specified range of years, 
@@ -15,13 +15,13 @@ def load_hourly_era5(range_of_years, subregion, season, predictor, preprocess):
         subregion (str): Lon / Lat subregion of 'lon-7050_lat8030'
         season (str): winter or autumn
         predictor (str): Predictor of Storm Surges
-        preprocess (str): Preprocessing Folder
+        era5_import (str): Folder of preprocessed data
 
     Returns:
         ds (xr.Dataset): Hourly xarray-Dataset for the predictor
 
     Note:
-        Parameter-Section needs to be updated, if new data was preprocessed.
+        Parameter-Section needs to be updated, if new data was era5_imported.
     """
 
     # Parameter
@@ -39,7 +39,7 @@ def load_hourly_era5(range_of_years, subregion, season, predictor, preprocess):
     ]
 
     available_subregions = [
-        "lon-0530_lat7040", # Preprocessing1
+        "lon-0530_lat7040", # era5_importing1
     ]
 
     available_seasons = [
@@ -47,8 +47,8 @@ def load_hourly_era5(range_of_years, subregion, season, predictor, preprocess):
         "autumn",
     ]
 
-    available_preprocesses = [
-        "preprocess1",
+    available_era5_imports = [
+        "era5_import1",
     ]
 
     # Error Handling
@@ -56,10 +56,10 @@ def load_hourly_era5(range_of_years, subregion, season, predictor, preprocess):
     assert subregion in available_subregions, f'subregion: {subregion} not in available set of {available_subregions}'
     assert season in available_seasons, f'season: {season} not in available set of {available_seasons}'
     assert predictor in available_predictors, f'predictor: {predictor} not in available set of {available_predictors}'
-    assert preprocess in available_preprocesses, f'preprocess: {preprocess} not in available set of {available_preprocesses}'
+    assert era5_import in available_era5_imports, f'era5_import: {era5_import} not in available set of {available_era5_imports}'
 
     # Main
-    folder = f"resources\era5\{preprocess}\\"
+    folder = f"resources\era5\{era5_import}\\"
 
     file = f'{folder}{predictor}_{range_of_years}_{subregion}_{season}.nc'
 
@@ -67,7 +67,7 @@ def load_hourly_era5(range_of_years, subregion, season, predictor, preprocess):
 
     return ds
 
-def load_daymean_era5(range_of_years, subregion, season, predictor, preprocess):
+def load_daymean_era5(range_of_years, subregion, season, predictor, era5_import):
     """
     Description:
         Loads daily mean of ERA5 Data for a specified range of years, 
@@ -78,13 +78,13 @@ def load_daymean_era5(range_of_years, subregion, season, predictor, preprocess):
         subregion (str): Lon / Lat subregion of 'lon-7050_lat8030'
         season (str): winter or autumn
         predictor (str): Predictor of Storm Surges
-        preprocess (str): Preprocessing Folder
+        era5_import (str): era5_importing Folder
 
     Returns:
         ds (xr.Dataset): Hourly xarray-Dataset for the predictor
 
     Note:
-        Parameter-Section needs to be updated, if new data was preprocessed.
+        Parameter-Section needs to be updated, if new data was era5_imported.
     """
 
     # Parameter
@@ -102,7 +102,7 @@ def load_daymean_era5(range_of_years, subregion, season, predictor, preprocess):
     ]
 
     available_subregions = [
-        "lon-0530_lat7040", # Preprocess1
+        "lon-0530_lat7040", # preprocess1
     ]
 
     available_seasons = [
@@ -110,11 +110,11 @@ def load_daymean_era5(range_of_years, subregion, season, predictor, preprocess):
         "admean", # autumn
     ]
 
-    available_preprocesses = [
+    available_era5_imports = [
         "preprocess1",
     ]
 
-    # Preprocess Parameters
+    # Preprocessed Parameters
     if season.lower() == "winter":
         season = "wdmean"
     if season.lower() == "autumn":
@@ -125,10 +125,10 @@ def load_daymean_era5(range_of_years, subregion, season, predictor, preprocess):
     assert subregion in available_subregions, f'subregion: {subregion} not in available set of {available_subregions}'
     assert season in available_seasons, f'season: {season} not in available set of {available_seasons}'
     assert predictor in available_predictors, f'predictor: {predictor} not in available set of {available_predictors}'
-    assert preprocess in available_preprocesses, f'preprocess: {preprocess} not in available set of {available_preprocesses}'
+    assert era5_import in available_era5_imports, f'Preprocess: {era5_import} not in available set of {available_era5_imports}'
 
     # Main
-    folder = f"resources\era5\{preprocess}\\"
+    folder = f"resources\era5\{era5_import}\\"
 
     file = f'{folder}{predictor}_{range_of_years}_{subregion}_{season}.nc'
 

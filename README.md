@@ -12,14 +12,22 @@ and is embedded in the CLimate INTelligence project.
 
 # Structure
 data (package): Modules for preprocessing and manipulating data including bash-scripts
+
 notebooks (folder): Contains all notebooks used while developing the packages. To run notebooks, place them to master_thesis folder.
 
+models (folder/package): Model runs and corresponding hyperparamters as well as model-evaluation.
+
+resources (folder): Preprocessed data of predictors and predictand.
+
+results (folder): Visualisations of data, model-output and diagnostics.
+
+
 # Note
-This repository does not include the resource folder. In order for everything to run smoothly, 
+This repository does not include the "resources" folder. In order for everything to run smoothly, 
 include the resource folder containing ERA5 and GESLA Dataset. This folder can be sent to you upon request.
 You can download GESLA and ERA5 from their websites. 
 
 # Predictors
-ERA5: Reanalysis data of Sea Level Pressure (SP\Pa), Total Precipitation (TP\) and zonal / meridional wind components at 10m height (u10\ms^-1, v10\ms^-1)
+ERA5: Reanalysis data of Surface Pressure (SP\Pa), Total Precipitation (TP\) and zonal / meridional horizontal wind components at 10m height (u10\ms^-1, v10\ms^-1)
 
 
