@@ -18,10 +18,10 @@ def load_hourly_era5(range_of_years, subregion, season, predictor, era5_import):
         era5_import (str): Folder of preprocessed data
 
     Returns:
-        ds (xr.Dataset): Hourly xarray-Dataset for the predictor
+        da (xr.DataArray): Hourly xarray-DataArray for the predictor
 
     Note:
-        Parameter-Section needs to be updated, if new data was era5_imported.
+        Parameter-Section needs to be updated, if new data was preprocessed.
     """
 
     # Parameter
@@ -39,7 +39,7 @@ def load_hourly_era5(range_of_years, subregion, season, predictor, era5_import):
     ]
 
     available_subregions = [
-        "lon-0530_lat7040", # era5_importing1
+        "lon-0530_lat7040", # preprocess1
     ]
 
     available_seasons = [
@@ -48,7 +48,7 @@ def load_hourly_era5(range_of_years, subregion, season, predictor, era5_import):
     ]
 
     available_era5_imports = [
-        "era5_import1",
+        "preprocess1",
     ]
 
     # Error Handling
@@ -65,7 +65,9 @@ def load_hourly_era5(range_of_years, subregion, season, predictor, era5_import):
 
     ds = xr.open_dataset(file)
 
-    return ds
+    da = ds[predictor]
+
+    return da
 
 def load_daymean_era5(range_of_years, subregion, season, predictor, era5_import):
     """
@@ -81,10 +83,10 @@ def load_daymean_era5(range_of_years, subregion, season, predictor, era5_import)
         era5_import (str): era5_importing Folder
 
     Returns:
-        ds (xr.Dataset): Hourly xarray-Dataset for the predictor
+        ds (xr.DataArray): Hourly xarray-DataArray for the predictor
 
     Note:
-        Parameter-Section needs to be updated, if new data was era5_imported.
+        Parameter-Section needs to be updated, if new data was preprocessed.
     """
 
     # Parameter
@@ -133,5 +135,33 @@ def load_daymean_era5(range_of_years, subregion, season, predictor, era5_import)
     file = f'{folder}{predictor}_{range_of_years}_{subregion}_{season}.nc'
 
     ds = xr.open_dataset(file)
+
+    da = ds[predictor]
+
+    return da
+
+def load_gesla(station_names):
+    """
+    Description: 
+        Loads GESLA Dataset at indicated stations
+    Parameters:
+        station_names (list): A list of station flags of the GESLA Dataset. 
+    Returns:
+        ds (xr.Dataset): Sea Level values at indicated stations
+    """
+    # Modules
+    #---
+    from gesla import GeslaDataset
+
+    print("Load Predictand from GESLA")
+
+    # Create GESLA Dataset
+    meta_file = "resources/gesla/GESLA3_ALL.csv"
+    data_path = "resources/gesla/GESLA3.0_ALL.zip"
+
+    g3 = GeslaDataset(meta_file=meta_file, data_path=data_path)
+
+    # Select Stations
+    ds = g3.files_to_xarray(station_names)
 
     return ds

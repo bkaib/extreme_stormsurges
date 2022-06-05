@@ -14,6 +14,51 @@ from gesla import GeslaDataset
 #---
 # Modularized functions
 #--- 
+def intersect_time(predictor, predictand):
+    """
+    Description:
+        Returns data of predictor and predictand in overlapping time-intervall.
+
+    Parameters:
+        predictor (xr.DataArray): Predictor values as a timeseries with lat, lon
+        predictand (xr.DataArray): Predictand values as a timeseries per station
+
+    Returns:
+        X, Y, t
+        X (np.array, float): Predictor values as a field time series. Shape:(time, lat, lon)
+        Y (np.array, float): Predictand at selected stations. Shape:(time, stations)
+        t (np.array, datetime.date): Time-series for x, y. Shape:(time,)
+    """
+
+    #---
+    # Predictor and predictand values of overlapping time series
+    #
+    # GESLA data is hourly. Needs to be daily, like ERA5. 
+    #---
+    predictor_time = pd.to_datetime(predictor.time.values).date
+    predictand_time = pd.to_datetime(predictand.date_time.values).date
+    predictor = predictor.values # Daily data
+    predictand = predictand.values # Hourly data
+
+    # Choose maximum per day, i.e. if one hour
+    # a day indicates an extreme surge, the whole day 
+    # is seen as extreme surge.
+    print("Get overlapping timeseries of ERA5 and GESLA")
+
+    predictand_dmax = []
+    for date in predictor_time:
+        time_idx = np.where(predictand_time==date)[0] # Intersection of timeseries'
+        dmax = np.max(predictand[:, time_idx], axis=1) # Daily maximum of predictand
+        predictand_dmax.append(dmax)
+
+    predictand_dmax = np.array(predictand_dmax)
+
+    X = predictor
+    Y = predictand_dmax
+    t = predictor_time
+        
+    return X, Y, t
+    
 def preprocess(season, 
 predictor, 
 percentile, 
@@ -173,8 +218,9 @@ def get_lonlats(range_of_years, subregion, season, predictor, era5_import):
     
     return(lats, lons)
 
+#----------------------------------------
 #---
-#  Specific preprocesses
+#  Specific preprocesses (not modularized)
 #---
 def preprocessing1(season, predictor, percentile=0.95,):
     """
