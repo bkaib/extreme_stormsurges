@@ -251,7 +251,7 @@ def preprocessing1(season, predictor, percentile=0.95,):
     #---
     range_of_years = "1999-2008" 
     subregion = "lon-0530_lat7040" 
-    era5_import = "preprocessing1" # Flag for ERA5 data import
+    era5_import = "preprocess1" # Flag for ERA5 data import
 
     #---
     # Load Predictors
@@ -321,7 +321,7 @@ def preprocessing1(season, predictor, percentile=0.95,):
     #---
     predictor_time = pd.to_datetime(sp_dmean.time.values).date
     predictand_time = pd.to_datetime(ds_extremes.date_time.values).date
-    sp = sp_dmean[predictor].values # Daily data
+    sp = sp_dmean.values # Daily data
     sl = ds_extremes.values # Hourly data
 
     # Choose maximum per day, i.e. if one hour
