@@ -157,3 +157,34 @@ def cfm_metrics(model, X_test, y_test, beta=0.5):
         print(f"{key}: {value}")
 
     return metrics
+
+#---
+# Auxillary Functions
+#---
+def separate_predictor_importance(importance, n_pred_features):
+    """
+    Description: 
+        Separates the importance of a single predictor from all features when multiple predictors were passed to the model
+    Parameters:
+        importance (np.array): Importance values of all features passed to model, Shape:(n_features,)
+        n_pred_features (int): number of features of a single predictor within all features
+    Returns:
+        predictor_importance (np.array): Importance of a single predictor from a model run, Shape:(n_predictors, n_pred_features)
+    """
+
+    # Separate importance of each predictor
+    predictor_importance = []
+    n_features = len(importance)
+    n_predictors = n_features // n_pred_features
+
+    start = 0
+    for i in range(n_predictors):
+        end = start + n_pred_features 
+        pred_importance = importance[start : end]
+        start = end # Update index for next predictor
+        
+        predictor_importance.append(pred_importance)
+
+    predictor_importance = np.array(predictor_importance, dtype=object) # If number of lon lats is not the same (can this happen?)
+
+    return predictor_importance
