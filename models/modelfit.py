@@ -8,7 +8,6 @@ def optimize_hyperparameter(X_train, y_train, clf, optimizer, param_grid, k, n_i
     Parameters:
         X_train (): Predictor train data
         y_train (): Predictand train data
-
         clf (): Base Model
         optimizer (): GridSearchCV or RandomizedSearchCV
         param_grid (dict): Dictionary with hyperparameter ranges
