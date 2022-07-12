@@ -134,36 +134,6 @@ station_names=['hanko-han-fin-cmems',],
         
     return X, Y, t
 
-def timelag(X, Y, t, timelag):
-    """
-    Description: 
-        Returns timelagged predictor data X_timelag for predictors Y_timelag.
-    Parameters:
-        X (np.array, float): Predictor values as a field time series. Shape:(time, lat, lon)
-        Y (np.array, float): Predictand at selected stations. Shape:(time, stations)
-        t (np.array, datetime.date): Time-series of intersected timepoints of X and Y. Shape:(time,)
-        timelag (int): timelag for predictor data X. Dimension of timelag depends on timeseries-interval of X.
-    Returns:
-        X_timelag (np.array, float): Predictor values as a field time series (timelagged). Shape:(time, lat, lon)
-        Y_timelag (np.array, float): Predictand at selected stations. Shape:(time, stations)
-        t_predictor (np.array, datetime.date): Time-series of X (timelagged). Shape:(time,)
-        t_predictand (np.array, datetime.date): Time-series of Y. Shape:(time,)
-
-    """
-    n_timepoints = len(t)
-    # Timelag of predictor 
-    # Return predictor data and corresponding timeseries
-    #---
-    t_predictor = t[:(n_timepoints-timelag)]
-    X_timelag =  X[:(n_timepoints-timelag)]
-
-    # Return Predictand data (not lagged) and corresponding timeseries
-    #---
-    t_predictand = t[timelag:]
-    Y_timelag = Y[timelag:]
-
-    return (X_timelag, Y_timelag, t_predictor, t_predictand)
-
 def intersect_time(predictor, predictand):
     """
     Description:
@@ -208,7 +178,83 @@ def intersect_time(predictor, predictand):
     t = predictor_time
         
     return X, Y, t
-  
+
+def timelag(X, Y, t, timelag):
+    """
+    Description: 
+        Returns timelagged predictor data X_timelag for predictand Y_timelag.
+        Shifts predictand data Y according to the given timelag.
+    Parameters:
+        X (np.array, float): Predictor values as a field time series. Shape:(time, lat, lon)
+        Y (np.array, float): Predictand at selected stations. Shape:(time, stations)
+        t (np.array, datetime.date): Time-series of intersected timepoints of X and Y. Shape:(time,)
+        timelag (int): timelag for predictor data X. Dimension of timelag depends on timeseries-interval of X.
+    Returns:
+        X_timelag (np.array, float): Predictor values as a field time series (timelagged). Shape:(time, lat, lon)
+        Y_timelag (np.array, float): Predictand at selected stations. Shape:(time, stations)
+        t_predictor (np.array, datetime.date): Time-series of X (timelagged). Shape:(time,)
+        t_predictand (np.array, datetime.date): Time-series of Y. Shape:(time,)
+
+    """
+    n_timepoints = len(t)
+    # Timelag of predictor 
+    # Return predictor data and corresponding timeseries
+    #---
+    t_predictor = t[:(n_timepoints-timelag)]
+    X_timelag =  X[:(n_timepoints-timelag)]
+
+    # Return Predictand data (not lagged) and corresponding timeseries
+    #---
+    t_predictand = t[timelag:]
+    Y_timelag = Y[timelag:]
+
+    return (X_timelag, Y_timelag, t_predictor, t_predictand)
+
+def combine_timelags(X, Y, timelags):
+    """
+    Description:
+        Returns combined timelagged predictor data X_timelag for predictand Y_timelag.
+        Shifts predictand data Y according to the maximum timelag given in timelags.
+        Note: Input data X, Y needs to be on the same time-interval (see preprocessing.intersect_time)
+        
+    Parameters:
+        X (np.array, float): Predictor values as a field time series. Shape:(n_labels, lat, lon)
+        Y (np.array, float): Predictand at selected stations. Shape:(n_labels, stations)
+
+    Returns:
+        X_timelag (np.array, float): Combined timelagged Predictor values in increasing order of timelags, e.g. t=0, t=1,..., Shape:(timelag, n_labels, lat, lon)
+        Y_timelag (np.array, float): Timelagged Predictand at selected stations. Shape:(n_labels, stations)
+    """
+
+    # Initialize
+    #---
+    timelags.sort()
+    max_timelag = max(timelags)
+
+    # Get timelagged Predictand 
+    #---
+    Y_timelag = Y[max_timelag:]
+
+    # Get timelagged predictors
+    #---
+    X_timelag = []
+
+    for timelag_ in timelags:
+
+        assert timelag_ >= 0, f"Timelag = {timelag_} needs to be a positive integer"
+
+        idx = max_timelag - timelag_
+
+        if timelag_ > 0:
+            X_tmp = X[idx : - timelag_]
+        if timelag_ == 0: 
+            X_tmp = X[idx:]
+
+        X_timelag.append(X_tmp)
+
+    X_timelag = np.array(X_timelag)
+
+    return X_timelag, Y_timelag
 #---
 # Information about preprocessed datasets
 #---
