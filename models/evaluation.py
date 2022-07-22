@@ -158,6 +158,35 @@ def cfm_metrics(model, X_test, y_test, beta=0.5):
 
     return metrics
 
+def relative_scores(trainscore, testscore):
+    """
+    Description:
+        Indicates if model has possibly over- or underfitted based on the relative
+        rate of train- and testscores.
+    Parameters:
+        trainscore (float): Trainscore of model
+        testscore(float): Testscore of model
+    Returns:
+        Possible overfit (underfit) if trainscore is at least 10% higher (lower) than testscore
+        relative_fit (float): trainscore / testscore
+    """
+    import numpy as np
+
+    #- Calculate ratio
+    relative_fit = trainscore / testscore  
+
+    #- Print scores
+    print(f"testscore: {testscore}")
+    print(f"trainscore: {trainscore}")
+    print(f"train/test: {relative_fit}")
+
+    #- Evaluate over- and underfitting
+    if (relative_fit) >= 1.1: # train score 10% higher than test score
+        print("Possible overfit")
+    if (relative_fit) <= 0.9: # train score 10% lower than test score
+        print("Possible underfit")
+
+    return relative_fit
 #---
 # Auxillary Functions
 #---

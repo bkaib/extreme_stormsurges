@@ -5,7 +5,7 @@ def load_model(model_path):
     Parameters:
         model_path (str): Path to modelfile (.pkl)
     Returns:  
-        model (): classifier with fitted hyperparameters of the model run.
+        model (dict): classifier with fitted hyperparameters of the model run.
     """
     import pickle
 
