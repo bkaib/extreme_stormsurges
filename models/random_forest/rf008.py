@@ -185,8 +185,7 @@ def run(season, predictors, percentile, station_names, clf, hparam_grid, optimiz
     if is_optimized:
         print(f"Optimize Hyperparameters using {optimizer}")
         print(f"Tested Hyperparameters: {hparam_grid}")
-
-        hparam_grid = modelfit.optimize_hyperparameter(X_train, y_train, clf, optimizer, hparam_grid, k, n_iter, n_jobs=-1)
+        hparam_grid = modelfit.optimize_hyperparameter(X_train, y_train, clf(), optimizer, hparam_grid, k, n_iter, n_jobs=-1)
 
     #---
     #  Save hyperparameters
