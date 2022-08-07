@@ -134,7 +134,7 @@ station_names=['hanko-han-fin-cmems',],
         
     return X, Y, t
 
-def intersect_time(predictor, predictand):
+def intersect_time(predictor, predictand,):
     """
     Description:
         Returns data of predictor and predictand in overlapping time-intervall.
@@ -168,8 +168,14 @@ def intersect_time(predictor, predictand):
     predictand_dmax = []
     for date in predictor_time:
         time_idx = np.where(predictand_time==date)[0] # Intersection of timeseries'
-        dmax = np.max(predictand[:, time_idx], axis=1) # Daily maximum of predictand
-        predictand_dmax.append(dmax)
+        if time_idx.shape[0] == 0:
+            time_idx = np.where(predictor_time==date)[0] # Find poistion in predictor timeseries
+            predictor = np.delete(predictor, time_idx, axis=0) # Update predictor timeseries to match predictand
+            predictor_time = np.delete(predictor_time, time_idx, axis=0) # Update predictor timepoints
+            print(f"date:{date} is skipped as it is in predictor data but not in predictand data")
+        else:
+            dmax = np.max(predictand[:, time_idx], axis=1) # Daily maximum of predictand
+            predictand_dmax.append(dmax)
 
     predictand_dmax = np.array(predictand_dmax)
 

@@ -1,9 +1,9 @@
 def load_model(model_path):
     """
     Description: 
-        Loads a saved model from disk
+        Loads a saved model (.sav) or hyperparameters (.pkl) from disk.
     Parameters:
-        model_path (str): Path to modelfile (.pkl)
+        model_path (str): Path to modelfile (.pkl or .sav)
     Returns:  
         model (dict): classifier with fitted hyperparameters of the model run.
     """
