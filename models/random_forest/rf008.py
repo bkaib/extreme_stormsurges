@@ -133,7 +133,7 @@ def run(season, predictors, percentile, station_names, clf, hparam_grid, optimiz
 
     # If all timeseries are equal, reduce to one timeseries for all predictors
     t = t[0, :]
-    Y = Y[0]
+    Y = Y[0] # Choose entries of first predictor, since Y[i] == Y[j] for all i != j.
 
     print("All Time-intervals are the same")  
 

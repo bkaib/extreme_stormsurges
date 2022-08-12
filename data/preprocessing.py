@@ -261,6 +261,7 @@ def combine_timelags(X, Y, timelags):
     X_timelag = np.array(X_timelag)
 
     return X_timelag, Y_timelag
+
 #---
 # Information about preprocessed datasets
 #---
@@ -299,6 +300,58 @@ def get_lonlats(range_of_years, subregion, season, predictor, era5_import):
     lons = dmean.longitude.values
     
     return(lats, lons)
+
+#---
+# General transformation of data
+#---
+def float64_to_datetime64(t, timeflag=""):
+    """
+    Description: 
+        Converts dates of type float64, e.g. (yyyymmdd.0) into datetime64 format.
+    Parameters:
+        t (np.array, float64): Values of timeseries to be converted
+        timeflag (str): Timeflag of specific hours of measurement, e.g. T11:30:00.000000000.
+    Returns:
+        t_datetime (np.array, np.datetime64): Converted values of timeseries
+    """
+    #- Modules
+    import numpy as np
+
+    #- Init
+    t_datetime = []
+
+    #- Main
+    for timepoint in t: 
+        timepoint = str(int(timepoint))
+        yyyy = timepoint[:4]
+        mm = timepoint[4:6]
+        dd = timepoint[6:8]
+        new_date = np.datetime64(f"{yyyy}-{mm}-{dd}{timeflag}")
+        t_datetime.append(new_date)
+
+    t_datetime = np.array(t_datetime)
+
+    return t_datetime
+
+def replace_dims(da, dims_to_replace):
+    """
+    Description:
+        Replaces indicated dimensions (keys) in dims_to_replace with corresponding values.
+        Leaves name of dimension unchanged.
+    Parameters:
+        da (xr.DataArray): DataArray with dimension and values to replace
+        dims_to_replace (dict): Dictionary with dimensions as keys and new values to replace old ones with.
+    Returns:
+        da (xr.DataArray): DataArray with updated dimension values
+    """
+    import xarray as xr
+    for dim, values in dims_to_replace.items():
+        
+        da = da.expand_dims({f"{dim}_tmp" : values}) # Expand dimensions with temporary new dimension
+        da = da.drop_vars(f"{dim}") # Drop old dimension with old values
+        da = da.rename({f'{dim}_tmp': dim,})
+
+    return da
 
 #----------------------------------------
 #---
