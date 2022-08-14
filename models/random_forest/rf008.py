@@ -122,7 +122,7 @@ def run(season, predictors, percentile, station_names, clf, hparam_grid, optimiz
         else:
             is_equal = False
 
-        assert is_equal, "Timeinterval is not equal"
+        assert is_equal, "Timeinterval of predictand is not equal"
 
         print("Time-interval is the same")
 

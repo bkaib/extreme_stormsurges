@@ -169,10 +169,10 @@ def intersect_time(predictor, predictand,):
     for date in predictor_time:
         time_idx = np.where(predictand_time==date)[0] # Intersection of timeseries'
         if time_idx.shape[0] == 0:
-            time_idx = np.where(predictor_time==date)[0] # Find poistion in predictor timeseries
+            time_idx = np.where(predictor_time==date)[0] # Find poistion in (updated) predictor timeseries
             predictor = np.delete(predictor, time_idx, axis=0) # Update predictor timeseries to match predictand
             predictor_time = np.delete(predictor_time, time_idx, axis=0) # Update predictor timepoints
-            print(f"date:{date} is skipped as it is in predictor data but not in predictand data")
+            print(f"date:{date} at position {time_idx} was deleted as it was in predictor data but not in predictand data") 
         else:
             dmax = np.max(predictand[:, time_idx], axis=1) # Daily maximum of predictand
             predictand_dmax.append(dmax)
@@ -262,6 +262,30 @@ def combine_timelags(X, Y, timelags):
 
     return X_timelag, Y_timelag
 
+def convert_timestamp(da, dim):
+    """
+    Description: 
+        Converts timepoint to datetime64 type
+    Parameters:
+        da (DataArray): DataArray with timeseries
+        dim (str): Flag of time dimension
+    Return:
+        da (DataArray): DataArray with converted timestamp values
+    """
+    # Ensure correct dtype of timestamp
+    #---
+    if "datetime64" in str(da[dim].dtype):
+        print(f"timeseries is already of dtype {da[dim].dtype}")
+        
+    if da[dim].dtype == "float64":
+        print(f"Convert timestamp from dtype: {da[dim].dtype} to datetime64")
+        era5_timeflag = "T11:30:00.000000000" # Timeflag of ERA5
+        t = da[dim].values 
+        t_datetime = float64_to_datetime64(t, era5_timeflag) # Convert datatype 
+        coords_to_replace = {"time" : t_datetime} 
+        da = replace_coords(da, coords_to_replace) # Replace dimension values with new datatype
+
+    return da
 #---
 # Information about preprocessed datasets
 #---
@@ -304,6 +328,20 @@ def get_lonlats(range_of_years, subregion, season, predictor, era5_import):
 #---
 # General transformation of data
 #---
+def aggregate_dimension(da, dim):
+    """
+    Description:
+        Aggregate (mean) along a dimension of a dataset. 
+    Parameters:
+        da (DataArray): xr.DataArray 
+        dim (str): Dimension along which mean is taken
+    Return:
+        aggregated_da
+    """
+    aggregated_da = da.mean(dim=dim)
+    
+    return aggregated_da
+
 def float64_to_datetime64(t, timeflag=""):
     """
     Description: 
@@ -332,6 +370,22 @@ def float64_to_datetime64(t, timeflag=""):
     t_datetime = np.array(t_datetime)
 
     return t_datetime
+
+def replace_coords(da, coords_to_replace):
+    """
+    Description:
+        Replaces indicated coordinates (keys) in coords_to_replace with corresponding values.
+        Leaves name of dimension unchanged.
+    Parameters:
+        da (xr.DataArray): DataArray with coordinates and values to replace
+        coords_to_replace (dict): Dictionary with coordinates as keys and new values to replace old ones with.
+    Returns:
+        da (xr.DataArray): DataArray with updated coordinate values
+    """
+    for coord, values in coords_to_replace.items():
+        da.coords[coord] = values
+        
+    return da
 
 def replace_dims(da, dims_to_replace):
     """

@@ -88,8 +88,9 @@ def load_daymean_era5(range_of_years, subregion, season, predictor, era5_import)
     Note:
         Parameter-Section needs to be updated, if new data was preprocessed.
     """
-
+    #---
     # Parameter
+    #---
     available_years = [
     "1999-2008",
     "2009-2018",
@@ -116,20 +117,26 @@ def load_daymean_era5(range_of_years, subregion, season, predictor, era5_import)
         "preprocess1",
     ]
 
-    # Preprocessed Parameters
+    #---
+    #  Preprocessed Parameters
+    #---
     if season.lower() == "winter":
         season = "wdmean"
     if season.lower() == "autumn":
         season = "admean"
 
-    # Error Handling
+    #---
+    #  Error Handling
+    #---    
     assert range_of_years in available_years, f'years: {range_of_years} not in available set of {available_years}'
     assert subregion in available_subregions, f'subregion: {subregion} not in available set of {available_subregions}'
     assert season in available_seasons, f'season: {season} not in available set of {available_seasons}'
     assert predictor in available_predictors, f'predictor: {predictor} not in available set of {available_predictors}'
     assert era5_import in available_era5_imports, f'Preprocess: {era5_import} not in available set of {available_era5_imports}'
 
-    # Main
+    #---
+    #  Main
+    #---
     folder = f"resources\era5\{era5_import}\\"
 
     file = f'{folder}{predictor}_{range_of_years}_{subregion}_{season}.nc'
@@ -137,7 +144,7 @@ def load_daymean_era5(range_of_years, subregion, season, predictor, era5_import)
     ds = xr.open_dataset(file)
 
     da = ds[predictor]
-
+    
     return da
 
 def load_gesla(station_names):
