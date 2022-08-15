@@ -199,6 +199,10 @@ def separate_predictor_importance(importance, n_pred_features):
         n_pred_features (int): number of features of a single predictor within all features
     Returns:
         predictor_importance (np.array): Importance of a single predictor from a model run, Shape:(n_predictors, n_pred_features)
+    Note: 
+        From rf009 combinations of predictors and timelags are allowed. This function orders the n_pred_features as follows: 
+        1: timelag1,pred1, 2:timelag1,pred2, ..., n: timelag1,pred_n, n+1: timelag2, pred1, ... t*n: timelag_t, pred_n
+        For an example see notebooks>rf009.ipynb
     """
 
     # Separate importance of each predictor
