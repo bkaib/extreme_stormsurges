@@ -1,4 +1,4 @@
-def map(data, lons, lats, tflag="", vmin=None, vmax=None):
+def map(data, lons, lats, tflag="", vmin=None, vmax=None, unit=None, is_clb_label=True):
     """
     Description:
         Plots predictor-data on a lat-lon map.
@@ -9,6 +9,8 @@ def map(data, lons, lats, tflag="", vmin=None, vmax=None):
         tflag (str): Additional Title information, (Defaults: "")
         vmin (float): Minimum value for colorbar, (Defaults: None)
         vmax (float): Maximum value for colorbar, (Defaults: None)
+        unit (str): Unit of data
+        is_clb_label (bool): Whether to label the colorbar with unit or not.
     Returns:
         fig: Figure of data
     """
@@ -39,9 +41,12 @@ def map(data, lons, lats, tflag="", vmin=None, vmax=None):
     else:
         cbarticks = np.arange(vmin, vmax, (vmax-vmin) / 5) # 5 ticks
 
-    plt.colorbar(plot, shrink=.62, ticks=cbarticks)
+    clb = plt.colorbar(plot, shrink=.62, ticks=cbarticks)
 
-    ax.set_title(f"Dataset: {tflag}")
+    if is_clb_label:
+        clb.set_label(f"{unit}", rotation=90, labelpad=1)
+
+    ax.set_title(f"{tflag}")
 
     return fig
 

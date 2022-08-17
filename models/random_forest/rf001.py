@@ -207,7 +207,7 @@ def optimization(X_train, y_train):
     #---
     print(clf.best_params_)
 
-    print(clf.score(X_test, y_test)) # Accuracy on basis of test data
+    # print(clf.score(X_test, y_test)) # Accuracy on basis of test data
 
     print(clf.best_score_) # Accuracy based on k-fold cross-validation
 
