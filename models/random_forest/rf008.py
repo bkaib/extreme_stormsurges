@@ -217,11 +217,6 @@ def run(season, predictors, percentile, station_names, clf, hparam_grid, optimiz
     #--- 
     print("Evaluate Model \n")
 
-    #---
-    # Evaluate model / Diagnostic
-    #--- 
-    print("Evaluate Model \n")
-
     # Score & Importance
     #---
     test_score = model.score(X_test, y_test)

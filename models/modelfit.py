@@ -21,8 +21,6 @@ def optimize_hyperparameter(X_train, y_train, clf, optimizer, param_grid, k, n_i
     from sklearn.model_selection import RandomizedSearchCV
     # RandomSearchCV
     #---
-    print(f"Optimize Hyperparameters using {optimizer}")
-
     if optimizer == "RandomSearchCV":
         assert n_iter != None, f"{optimizer} needs number of combinations."
         opt_model = RandomizedSearchCV(estimator=clf, 
