@@ -1,0 +1,73 @@
+Add predictor sp to model input features
+timeseries is already of dtype datetime64[ns]
+Get overlapping timeseries of ERA5 and GESLA
+Introduce timelags: [0]
+Add predictor tp to model input features
+timeseries is already of dtype datetime64[ns]
+Get overlapping timeseries of ERA5 and GESLA
+Introduce timelags: [0]
+Add predictor u10 to model input features
+timeseries is already of dtype datetime64[ns]
+Get overlapping timeseries of ERA5 and GESLA
+Introduce timelags: [0]
+Add predictor v10 to model input features
+timeseries is already of dtype datetime64[ns]
+Get overlapping timeseries of ERA5 and GESLA
+Introduce timelags: [0]
+Reshape for model input
+(903, 1, 4, 121, 141)
+Data is prepared as follows
+X.shape : (903, 68244)
+y.shape : (903,)
+pred_names : ['sp_tlag0', 'tp_tlag0', 'u10_tlag0', 'v10_tlag0']
+pred_units : ['Pa', 'm', 'm s**-1', 'm s**-1']
+Apply train-test-split
+Detrend train-test data for predictand
+Applied one-hot-encoding to test-set with Percentile: 0.95
+Applied one-hot-encoding to train-set with Percentile: 0.95
+677 training datapoints used
+Optimize Hyperparameters using RandomSearchCV
+Tested Hyperparameters: {'n_estimators': [0, 111, 222, 333, 444, 555, 666, 777, 888, 1000], 'max_depth': [5, 17, 30, 42, 55, None], 'min_samples_split': [2, 5, 10], 'min_samples_leaf': [1, 2, 4], 'criterion': ['gini'], 'random_state': [0], 'class_weight': ['balanced'], 'oob_score': [True]}
+Fitting 3 folds for each of 100 candidates, totalling 300 fits
+File saved to: models/random_forest/rf011/rf011_795.pkl
+Saved Hyperparameters
+Fit model with hyperparameters {'random_state': 0, 'oob_score': True, 'n_estimators': 111, 'min_samples_split': 2, 'min_samples_leaf': 2, 'max_depth': 55, 'criterion': 'gini', 'class_weight': 'balanced'}
+Save model
+Evaluate Model 
+
+testscore: 0.9469026548672567
+trainscore: 1.0
+train/test: 1.0560747663551402
+saved importance to : results/random_forest/rf011/importance_95_7
+saved testscore to : results/random_forest/rf011/testscore_95_7
+saved trainscore to : results/random_forest/rf011/trainscore_95_7
+saved relativescore to : results/random_forest/rf011/relativescore_95_7
+Show Confusion Matrix on testdata 
+
+Show Confusion Matrix on traindata 
+
+saved cf matrix to : results/random_forest/rf011/testcf_matrix_95_7.pdf
+saved cf matrix to : results/random_forest/rf011/traincf_matrix_95_7.pdf
+Metric values 
+
+tnr: 1.0
+tpr: 0.0
+gmean: 0.0
+wacc: 0.5
+precision: nan
+recall: 0.0
+fmeasure: nan
+Metric values 
+
+tnr: 1.0
+tpr: 1.0
+gmean: 1.0
+wacc: 1.0
+precision: 1.0
+recall: 1.0
+fmeasure: 1.0
+saved cf metrics to : traincf_metrics_95_7.pkl
+Show AUROC 
+
+AUC: 0.8872663551401869
+saved AUROC to : results/random_forest/rf011/AUROC_95_7.pdf

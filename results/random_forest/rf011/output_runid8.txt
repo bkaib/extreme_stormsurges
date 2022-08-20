@@ -1,0 +1,54 @@
+Add predictor u10 to model input features
+timeseries is already of dtype datetime64[ns]
+Get overlapping timeseries of ERA5 and GESLA
+Introduce timelags: [3, 2]
+Reshape for model input
+(900, 2, 1, 121, 141)
+Data is prepared as follows
+X.shape : (900, 34122)
+y.shape : (900,)
+pred_names : ['u10_tlag2', 'u10_tlag3']
+pred_units : ['m s**-1', 'm s**-1']
+Apply train-test-split
+File saved to: models/random_forest/rf011/rf011_895.pkl
+Saved Hyperparameters
+Fit model with hyperparameters {'bootstrap': True, 'ccp_alpha': 0.0, 'class_weight': 'balanced', 'criterion': 'gini', 'max_depth': 5, 'max_features': 'auto', 'max_leaf_nodes': None, 'max_samples': None, 'min_impurity_decrease': 0.0, 'min_samples_leaf': 2, 'min_samples_split': 2, 'min_weight_fraction_leaf': 0.0, 'n_estimators': 777, 'n_jobs': None, 'oob_score': True, 'random_state': 0, 'verbose': 0, 'warm_start': False}
+Save model
+Evaluate Model 
+
+testscore: 0.9111111111111111
+trainscore: 0.9629629629629629
+train/test: 1.056910569105691
+saved importance to : results/random_forest/rf011/importance_95_8
+saved testscore to : results/random_forest/rf011/testscore_95_8
+saved trainscore to : results/random_forest/rf011/trainscore_95_8
+saved relativescore to : results/random_forest/rf011/relativescore_95_8
+Show Confusion Matrix on testdata 
+
+Show Confusion Matrix on traindata 
+
+saved cf matrix to : results/random_forest/rf011/testcf_matrix_95_8.pdf
+saved cf matrix to : results/random_forest/rf011/traincf_matrix_95_8.pdf
+Metric values 
+
+tnr: 0.9246231155778895
+tpr: 0.8076923076923077
+gmean: 0.8641822596922231
+wacc: 0.8661577116350986
+precision: 0.5833333333333334
+recall: 0.8076923076923077
+fmeasure: 0.6774193548387097
+Metric values 
+
+tnr: 0.9568221070811744
+tpr: 1.0
+gmean: 0.9781728411079376
+wacc: 0.9784110535405872
+precision: 0.7933884297520661
+recall: 1.0
+fmeasure: 0.8847926267281107
+saved cf metrics to : traincf_metrics_95_8.pkl
+Show AUROC 
+
+AUC: 0.9489756474681098
+saved AUROC to : results/random_forest/rf011/AUROC_95_8.pdf
