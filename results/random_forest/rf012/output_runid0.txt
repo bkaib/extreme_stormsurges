@@ -1,0 +1,22 @@
+Add predictor sp to model input features
+timeseries is already of dtype datetime64[ns]
+Get overlapping timeseries of ERA5 and GESLA
+Introduce timelags: [3]
+Reshape for model input
+(900, 1, 1, 121, 141)
+Data is prepared as follows
+X.shape : (900, 17061)
+y.shape : (900,)
+pred_names : ['sp_tlag3']
+pred_units : ['Pa']
+Apply train-test-split
+File saved to: models/random_forest/rf012/rf012_0954.pkl
+Saved Hyperparameters
+Fit model with hyperparameters {'bootstrap': True, 'ccp_alpha': 0.0, 'class_weight': 'balanced', 'criterion': 'gini', 'max_depth': 30, 'max_features': 'auto', 'max_leaf_nodes': None, 'max_samples': None, 'min_impurity_decrease': 0.0, 'min_samples_leaf': 4, 'min_samples_split': 5, 'min_weight_fraction_leaf': 0.0, 'n_estimators': 222, 'n_jobs': None, 'oob_score': True, 'random_state': 0, 'verbose': 0, 'warm_start': False}
+Save model
+Hey
+Hey
+1111
+1111
+no
+name
