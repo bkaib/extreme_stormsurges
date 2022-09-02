@@ -2,7 +2,8 @@
 # Modules
 #---
 import numpy as np
-
+import matplotlib.pyplot as plt 
+import cartopy.crs as ccrs
 #---
 # Graphical evaluation
 #---
@@ -74,7 +75,7 @@ def plot_cf(model, X_test, y_test,):
 
     return fig
 
-def importance_map(importance, lons, lats, tflag=""):
+def importance_map(importance, lons, lats, tflag="", ax=None):
     """
     Description:
         Plots importance of a predictor on a lat lon map.
@@ -85,6 +86,7 @@ def importance_map(importance, lons, lats, tflag=""):
         tflag (str): Additional Title information
     Returns:
         fig: Figure of importance
+        ax: Axis to draw position of station into it
     """
     # Modules
     import matplotlib.pyplot as plt 
@@ -100,7 +102,10 @@ def importance_map(importance, lons, lats, tflag=""):
 
     # Plot importance on lat/lon map
     fig = plt.figure(tight_layout=True,)
-    ax = plt.axes(projection=ccrs.PlateCarree())
+
+    if ax == None:
+        ax = plt.axes(projection=ccrs.PlateCarree())
+        
     plot = ax.contourf(lons, lats, importance, 
     transform=ccrs.PlateCarree(),
     vmax=vmax,
@@ -112,7 +117,40 @@ def importance_map(importance, lons, lats, tflag=""):
 
     ax.set_title(f"Importance {tflag}")
 
-    return fig
+    return fig, ax
+
+def overlay_importance(ax, importance, lats, lons, percentile=99, alpha=0.1, markersize=5, color="k"):
+    # TODO: put into module
+    """
+    Description:
+        Overlays the position of importance above a specified percentile to an axis.
+        Mainly this is used to overlay the importance on predictor maps.
+    Parameters:
+        ax
+        importance
+        lats
+        lons:
+        percentile (float): Percentile between 0. and 100.
+    Returns:
+    """
+    import matplotlib.lines as mlines
+
+    # Reshape importance
+    #---
+    nlat = len(lats)
+    nlon = len(lons)
+    importance = importance.reshape(nlat, nlon)
+
+    # Find positions above percentile
+    #---
+    perc = np.percentile(importance, q=percentile)
+    perc_lat_idx, perc_lon_idx = np.where(importance > perc) 
+    perc_lats = lats[perc_lat_idx]
+    perc_lons = lons[perc_lon_idx]
+
+    # Plot pairs into figure
+    #---
+    ax.plot(perc_lons, perc_lats, "s", markersize=markersize, alpha=alpha, color=color, transform=ccrs.PlateCarree())
 
 #---
 # Metrics

@@ -408,16 +408,18 @@ def replace_dims(da, dims_to_replace):
     return da
 
 def array_to_series(arr, index, index_name, series_name):
+    # Put to preprocessing
     """
     Description:
-        Converts np.array to a pd.Series as it is expected by GESLA modules
+        Converts np.array to a pd.Series
     Parameters:
         arr (np.array): Values to convert
         index (list): List of index values corresponding to values in arr
+        index_name (str): Name of the index of the pd.Series, e.g. "station"
+        series_name (str): Name of the series of the pd.Series, e.g. "sea_level"
     Returns:
         series (pd.Series): Pandas Series with indicated index names
     """
-    station_idx = np.zeros(arr.shape).astype(int)
     d = {f'{index_name}': index, f'{series_name}': arr}
     df = pd.DataFrame(d).set_index(f'{index_name}')
     series = df.squeeze()

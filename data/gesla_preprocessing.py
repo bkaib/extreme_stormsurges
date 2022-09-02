@@ -108,3 +108,23 @@ def select_season(ds_gesla, season):
     season_ds = ds_gesla.sel(date_time=get_season(ds_gesla['date_time.month']))
 
     return season_ds
+
+def station_position(gesla_predictand, station_names):
+    # TODO: Put into module
+    """
+    Description:
+        Returns positions longitudes and latitudes of GESLA Stations
+    Parameters:
+        gesla_predictand (xr.Dataset): GESLA Dataset loaded with data_loader.load_gesla(station_names)
+        station_names (list): List of station names within GESLA dataset
+    Returns:
+        station_positions (dict,): Dicitionary with station name (key) and a list of [lon, lat] (values)
+    """
+    lon = gesla_predictand.longitude.values
+    lat = gesla_predictand.latitude.values
+
+    station_positions = {}
+    for station_idx, station_name in enumerate(station_names):
+        station_positions[station_name] = [lon[station_idx], lat[station_idx]]
+
+    return station_positions
