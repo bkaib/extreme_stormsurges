@@ -1,0 +1,57 @@
+Add predictor tp to model input features
+timeseries is already of dtype datetime64[ns]
+Get overlapping timeseries of ERA5 and GESLA
+Introduce timelags: [2]
+Reshape for model input
+(901, 1, 1, 121, 141)
+Data is prepared as follows
+X.shape : (901, 17061)
+y.shape : (901,)
+pred_names : ['tp_tlag2']
+pred_units : ['m']
+Apply train-test-split
+Optimize Hyperparameters using GridSearchCV
+Tested Hyperparameters: {'n_estimators': [0, 111, 222, 333, 444, 555, 666, 777, 888, 1000], 'max_depth': [1, 2, 3, 4], 'criterion': ['gini'], 'random_state': [0], 'class_weight': ['balanced'], 'oob_score': [True]}
+Fitting 3 folds for each of 40 candidates, totalling 120 fits
+File saved to: models/random_forest/rf014/rf014_195.pkl
+Saved Hyperparameters
+Fit model with hyperparameters {'class_weight': 'balanced', 'criterion': 'gini', 'max_depth': 4, 'n_estimators': 444, 'oob_score': True, 'random_state': 0}
+Save model
+Evaluate Model 
+
+testscore: 0.8893805309734514
+trainscore: 0.9511111111111111
+train/test: 1.0694085129906026
+saved importance to : results/random_forest/rf014/importance_95_1
+saved testscore to : results/random_forest/rf014/testscore_95_1
+saved trainscore to : results/random_forest/rf014/trainscore_95_1
+saved relativescore to : results/random_forest/rf014/relativescore_95_1
+Show Confusion Matrix on testdata 
+
+Show Confusion Matrix on traindata 
+
+saved cf matrix to : results/random_forest/rf014/testcf_matrix_95_1.pdf
+saved cf matrix to : results/random_forest/rf014/traincf_matrix_95_1.pdf
+Metric values 
+
+tnr: 0.9375
+tpr: 0.6176470588235294
+gmean: 0.7609494842938386
+wacc: 0.7775735294117647
+precision: 0.6363636363636364
+recall: 0.6176470588235294
+fmeasure: 0.6268656716417911
+Metric values 
+
+tnr: 0.9454855195911414
+tpr: 0.9886363636363636
+gmean: 0.966820234562467
+wacc: 0.9670609416137526
+precision: 0.7310924369747899
+recall: 0.9886363636363636
+fmeasure: 0.8405797101449275
+saved cf metrics to : traincf_metrics_95_1.pkl
+Show AUROC 
+
+AUC: 0.8811274509803921
+saved AUROC to : results/random_forest/rf014/AUROC_95_1.pdf

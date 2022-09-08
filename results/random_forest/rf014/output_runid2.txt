@@ -1,0 +1,57 @@
+Add predictor u10 to model input features
+timeseries is already of dtype datetime64[ns]
+Get overlapping timeseries of ERA5 and GESLA
+Introduce timelags: [2]
+Reshape for model input
+(901, 1, 1, 121, 141)
+Data is prepared as follows
+X.shape : (901, 17061)
+y.shape : (901,)
+pred_names : ['u10_tlag2']
+pred_units : ['m s**-1']
+Apply train-test-split
+Optimize Hyperparameters using GridSearchCV
+Tested Hyperparameters: {'n_estimators': [0, 111, 222, 333, 444, 555, 666, 777, 888, 1000], 'max_depth': [1, 2, 3, 4], 'criterion': ['gini'], 'random_state': [0], 'class_weight': ['balanced'], 'oob_score': [True]}
+Fitting 3 folds for each of 40 candidates, totalling 120 fits
+File saved to: models/random_forest/rf014/rf014_295.pkl
+Saved Hyperparameters
+Fit model with hyperparameters {'class_weight': 'balanced', 'criterion': 'gini', 'max_depth': 4, 'n_estimators': 888, 'oob_score': True, 'random_state': 0}
+Save model
+Evaluate Model 
+
+testscore: 0.8805309734513275
+trainscore: 0.9333333333333333
+train/test: 1.059966499162479
+saved importance to : results/random_forest/rf014/importance_95_2
+saved testscore to : results/random_forest/rf014/testscore_95_2
+saved trainscore to : results/random_forest/rf014/trainscore_95_2
+saved relativescore to : results/random_forest/rf014/relativescore_95_2
+Show Confusion Matrix on testdata 
+
+Show Confusion Matrix on traindata 
+
+saved cf matrix to : results/random_forest/rf014/testcf_matrix_95_2.pdf
+saved cf matrix to : results/random_forest/rf014/traincf_matrix_95_2.pdf
+Metric values 
+
+tnr: 0.9375
+tpr: 0.5588235294117647
+gmean: 0.7238073354308655
+wacc: 0.7481617647058824
+precision: 0.6129032258064516
+recall: 0.5588235294117647
+fmeasure: 0.5846153846153845
+Metric values 
+
+tnr: 0.9250425894378195
+tpr: 0.9886363636363636
+gmean: 0.9563110068542406
+wacc: 0.9568394765370916
+precision: 0.6641221374045801
+recall: 0.9886363636363636
+fmeasure: 0.7945205479452054
+saved cf metrics to : traincf_metrics_95_2.pkl
+Show AUROC 
+
+AUC: 0.8688725490196079
+saved AUROC to : results/random_forest/rf014/AUROC_95_2.pdf

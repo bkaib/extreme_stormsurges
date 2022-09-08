@@ -6,6 +6,7 @@ import xarray as xr
 import pandas as pd
 import pickle
 import matplotlib.pyplot as plt
+import time
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
@@ -24,6 +25,8 @@ from data import visualisation
 from models import modelfit
 from models import evaluation
 from models import loader
+
+
 
 
 #---
@@ -159,6 +162,7 @@ is_station_name,
         t = []
         pred_units = []
         pred_names = []
+        tic_main = time.perf_counter()
 
         # Main
         #---
@@ -325,6 +329,7 @@ is_station_name,
         #---
         # Plot Predictor Maps
         #---
+        tic_predmap = time.perf_counter()
         visualisation.predictor_maps(
             model, X_test, y_test, 
             lons, lats, pred_units, pred_names, 
@@ -333,7 +338,9 @@ is_station_name,
             run_id, model_run, 
             percentile=99., markersize=5, alpha=0.08, color="k", colorbar_range=colorbar_range, nlevels=nlevels,
             )
-        
+        toc_predmap = time.perf_counter()
+        time_predmap = toc_predmap - tic_predmap # Save time of this separately as it is not necessary for model predictions
+
         #---
         # Evaluate model / Diagnostic
         #--- 
@@ -456,6 +463,18 @@ is_station_name,
         fname = f"{folder}AUROC_{str(percentile)[-2:]}_{run_id}.pdf"
         fig.savefig(fname)
         print(f"saved AUROC to : {fname}")
+
+        #--- 
+        # Calculate runtime
+        #---
+        sec2min = 1 / 60
+        toc_main = time.perf_counter()
+
+        total_time = ((toc_main - tic_main) - time_predmap) * sec2min # Time of the whole model run excluding the computing time for predictor maps
+
+        fname = f"clock_{run_id}"
+        np.save(f"{folder}{fname}", total_time)
+        print(f"saved runtime of {round(total_time, ndigits=2)} minutes to : {folder}{fname}")
 
         #---
         # Update run_id

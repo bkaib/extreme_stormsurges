@@ -1,0 +1,58 @@
+Add predictor u10 to model input features
+timeseries is already of dtype datetime64[ns]
+Get overlapping timeseries of ERA5 and GESLA
+Introduce timelags: [4]
+Reshape for model input
+(899, 1, 1, 121, 141)
+Data is prepared as follows
+X.shape : (899, 17061)
+y.shape : (899,)
+pred_names : ['u10_tlag4']
+pred_units : ['m s**-1']
+Apply train-test-split
+Optimize Hyperparameters using RandomSearchCV
+Tested Hyperparameters: {'n_estimators': [0, 111, 222, 333, 444, 555, 666, 777, 888, 1000], 'max_depth': [1, 3, 5, 7, 10], 'min_samples_split': [2, 5], 'min_samples_leaf': [1, 2, 4], 'criterion': ['gini'], 'random_state': [0], 'class_weight': ['balanced'], 'oob_score': [True]}
+Fitting 3 folds for each of 100 candidates, totalling 300 fits
+File saved to: models/random_forest/rf013/rf013_895.pkl
+Saved Hyperparameters
+Fit model with hyperparameters {'random_state': 0, 'oob_score': True, 'n_estimators': 1000, 'min_samples_split': 5, 'min_samples_leaf': 1, 'max_depth': 10, 'criterion': 'gini', 'class_weight': 'balanced'}
+Save model
+Evaluate Model 
+
+testscore: 0.8755555555555555
+trainscore: 0.9881305637982196
+train/test: 1.1285755170284235
+Possible overfit
+saved importance to : results/random_forest/rf013/importance_95_8
+saved testscore to : results/random_forest/rf013/testscore_95_8
+saved trainscore to : results/random_forest/rf013/trainscore_95_8
+saved relativescore to : results/random_forest/rf013/relativescore_95_8
+Show Confusion Matrix on testdata 
+
+Show Confusion Matrix on traindata 
+
+saved cf matrix to : results/random_forest/rf013/testcf_matrix_95_8.pdf
+saved cf matrix to : results/random_forest/rf013/traincf_matrix_95_8.pdf
+Metric values 
+
+tnr: 0.9484536082474226
+tpr: 0.41935483870967744
+gmean: 0.6306652122245284
+wacc: 0.6839042234785501
+precision: 0.5652173913043478
+recall: 0.41935483870967744
+fmeasure: 0.4814814814814815
+Metric values 
+
+tnr: 0.9862778730703259
+tpr: 1.0
+gmean: 0.9931152365512906
+wacc: 0.9931389365351629
+precision: 0.9191919191919192
+recall: 1.0
+fmeasure: 0.9578947368421054
+saved cf metrics to : traincf_metrics_95_8.pkl
+Show AUROC 
+
+AUC: 0.9143664782174925
+saved AUROC to : results/random_forest/rf013/AUROC_95_8.pdf

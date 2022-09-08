@@ -2,6 +2,7 @@
 import numpy as np
 import xarray as xr
 import pandas as pd
+from data import gesla_preprocessing
 
 #- Main
 def load_hourly_era5(range_of_years, subregion, season, predictor, era5_import):
@@ -172,3 +173,30 @@ def load_gesla(station_names):
     ds = g3.files_to_xarray(station_names)
 
     return ds
+
+#---
+# Load data of predictor
+#---
+def load_pf(season):
+    """
+    Description:
+        Loads sea level values at Degerby Station and uses them as a proxy for prefilling of the Baltic Sea.
+    Parameters:
+        season (str): "winter" or "autumn"
+    Returns:
+        degerby_proxy (xr.DataArray): Preprocessed sea level values of sea level at Degerby Station.
+    """
+    station_names = ['degerby-deg-fin-cmems',]
+    degerby_proxy = load_gesla(station_names)
+
+    # Select a season
+    #---
+    degerby_proxy = gesla_preprocessing.select_season(degerby_proxy, season)
+
+    # Select only sea_level analysis data
+    #---
+    degerby_proxy = gesla_preprocessing.get_analysis(degerby_proxy)
+    degerby_proxy = degerby_proxy["sea_level"] # Select values
+    degerby_proxy = degerby_proxy.to_xarray()
+
+    return degerby_proxy

@@ -153,58 +153,62 @@ def predictor_maps(model, X_test, y_test, lons, lats, pred_units, pred_names, st
 
         for pred_idx in range(n_pred):
             pred_flag = pred_names[pred_idx].split("_")[0] # Split because string is "tp_tlag0" etc.
-            # Convert unit of colorbar
-            #---
-            unit = pred_units[pred_idx]
-            if (unit == "m s**-1"): 
-                unit = "m/s"
 
-            # Create Figure
-            #---
-            data = X_pred_plot[time, pred_idx, :, :].flatten() # Predictor data
-
-            if is_correct_prediction:
-                tflag = f"{pred_names[pred_idx]}, y_orig = 1, y_pred = 1"
-                fname = f"{pred_names[pred_idx]}_{time_idx}_istrue_{run_id}"
+            if pred_flag == "pf": # No lat lon position for prefilling.
+                pass
             else:
-                tflag = f"{pred_names[pred_idx]}, y_orig = 1, y_pred = 0" 
-                fname = f"{pred_names[pred_idx]}_{time_idx}_isfalse_{run_id}"
-            
-            # Get colorbar vmin vmax
-            #---
-            vmin = colorbar_range[pred_flag][0] 
-            vmax = colorbar_range[pred_flag][1]
+                # Convert unit of colorbar
+                #---
+                unit = pred_units[pred_idx]
+                if (unit == "m s**-1"): 
+                    unit = "m/s"
 
-            # Choose colormap
-            #---
-            if pred_flag == "sp":
-                cmap = "coolwarm"
-            elif pred_flag == "tp":
-                cmap = "Blues"
-            elif (pred_flag == "u10" or pred_flag == "v10"):
-                cmap= "seismic"
+                # Create Figure
+                #---
+                data = X_pred_plot[time, pred_idx, :, :].flatten() # Predictor data
 
-            # Plot figure
-            #---
-            fig, ax = map(data, lons, lats, tflag=tflag, unit=unit, vmin=vmin, vmax=vmax, nlevels=nlevels, cmap=cmap)
-            
-            # Add position of station to map
-            #---
-            for station_name in station_names:
-                plot_station(ax, station_positions, station_name, is_station_name)
+                if is_correct_prediction:
+                    tflag = f"{pred_names[pred_idx]}, y_orig = 1, y_pred = 1"
+                    fname = f"{pred_names[pred_idx]}_{time_idx}_istrue_{run_id}"
+                else:
+                    tflag = f"{pred_names[pred_idx]}, y_orig = 1, y_pred = 0" 
+                    fname = f"{pred_names[pred_idx]}_{time_idx}_isfalse_{run_id}"
+                
+                # Get colorbar vmin vmax
+                #---
+                vmin = colorbar_range[pred_flag][0] 
+                vmax = colorbar_range[pred_flag][1]
 
-            # Add importance to map
-            #---
-            if is_overlay_importance:
-                pred_importance = predictor_importances[pred_idx]
-                evaluation.overlay_importance(ax, pred_importance, lats, lons, percentile=percentile, alpha=alpha, markersize=markersize, color=color)
+                # Choose colormap
+                #---
+                if pred_flag == "sp":
+                    cmap = "coolwarm"
+                elif pred_flag == "tp":
+                    cmap = "Blues"
+                elif (pred_flag == "u10" or pred_flag == "v10"):
+                    cmap= "seismic"
 
-            # Save plot
-            #---
-            folder1 = f"results/random_forest/{model_run}/predictor_maps/"
-            saver.directory_existance(folder1)
+                # Plot figure
+                #---
+                fig, ax = map(data, lons, lats, tflag=tflag, unit=unit, vmin=vmin, vmax=vmax, nlevels=nlevels, cmap=cmap)
+                
+                # Add position of station to map
+                #---
+                for station_name in station_names:
+                    plot_station(ax, station_positions, station_name, is_station_name)
 
-            fig.savefig(f"{folder1}{fname}.pdf")
+                # Add importance to map
+                #---
+                if is_overlay_importance:
+                    pred_importance = predictor_importances[pred_idx]
+                    evaluation.overlay_importance(ax, pred_importance, lats, lons, percentile=percentile, alpha=alpha, markersize=markersize, color=color)
+
+                # Save plot
+                #---
+                folder1 = f"results/random_forest/{model_run}/predictor_maps/"
+                saver.directory_existance(folder1)
+
+                fig.savefig(f"{folder1}{fname}.pdf")
 
         time_idx = time_idx + 1
 
@@ -222,54 +226,57 @@ def predictor_maps(model, X_test, y_test, lons, lats, pred_units, pred_names, st
     for time in range(n_time):
         for pred_idx in range(n_pred):
             pred_flag = pred_names[pred_idx].split("_")[0] # Split because string is "tp_tlag0" etc.
-            # Convert unit of colorbar
-            #---
-            unit = pred_units[pred_idx]
-            if (unit == "m s**-1"): 
-                unit = "m/s"
+            if pred_flag == "pf":
+                pass
+            else:
+                # Convert unit of colorbar
+                #---
+                unit = pred_units[pred_idx]
+                if (unit == "m s**-1"): 
+                    unit = "m/s"
 
-            # Create Figure
-            #---
-            data = X_pred_plot[time, pred_idx, :, :].flatten() # Predictor data
+                # Create Figure
+                #---
+                data = X_pred_plot[time, pred_idx, :, :].flatten() # Predictor data
 
-            tflag = f"{pred_names[pred_idx]},  y_orig = 0, y_pred = 1"
-            
-            # Get colorbar vmin vmax
-            #---
-            vmin = colorbar_range[pred_flag][0] # Split because string is "tp_tlag0" etc.
-            vmax = colorbar_range[pred_flag][1]
-
-            # Choose colormap
-            #---
-            if pred_flag == "sp":
-                cmap = "coolwarm"
-            elif pred_flag == "tp":
-                cmap = "Blues"
-            elif (pred_flag == "u10" or pred_flag == "v10"):
-                cmap= "seismic"
+                tflag = f"{pred_names[pred_idx]},  y_orig = 0, y_pred = 1"
                 
-            # Plot figure
-            #---
-            fig, ax = map(data, lons, lats, tflag=tflag, unit=unit, vmin=vmin, vmax=vmax, nlevels=nlevels, cmap=cmap)
+                # Get colorbar vmin vmax
+                #---
+                vmin = colorbar_range[pred_flag][0] # Split because string is "tp_tlag0" etc.
+                vmax = colorbar_range[pred_flag][1]
 
-            # Add position of station to plot
-            #---
-            for station_name in station_names:
-                plot_station(ax, station_positions, station_name, is_station_name)
+                # Choose colormap
+                #---
+                if pred_flag == "sp":
+                    cmap = "coolwarm"
+                elif pred_flag == "tp":
+                    cmap = "Blues"
+                elif (pred_flag == "u10" or pred_flag == "v10"):
+                    cmap= "seismic"
+                    
+                # Plot figure
+                #---
+                fig, ax = map(data, lons, lats, tflag=tflag, unit=unit, vmin=vmin, vmax=vmax, nlevels=nlevels, cmap=cmap)
 
-            # Add importance to map
-            if is_overlay_importance:
-                pred_importance = predictor_importances[pred_idx]
-                evaluation.overlay_importance(ax, pred_importance, lats, lons, percentile=percentile, alpha=alpha, markersize=markersize, color=color)
-            
-            # Save figure
-            #---
-            folder1 = f"results/random_forest/{model_run}/predictor_maps/"
-            saver.directory_existance(folder1)
+                # Add position of station to plot
+                #---
+                for station_name in station_names:
+                    plot_station(ax, station_positions, station_name, is_station_name)
 
-            fname = f"{pred_names[pred_idx]}_{time_idx}_predss_{run_id}"
+                # Add importance to map
+                if is_overlay_importance:
+                    pred_importance = predictor_importances[pred_idx]
+                    evaluation.overlay_importance(ax, pred_importance, lats, lons, percentile=percentile, alpha=alpha, markersize=markersize, color=color)
+                
+                # Save figure
+                #---
+                folder1 = f"results/random_forest/{model_run}/predictor_maps/"
+                saver.directory_existance(folder1)
 
-            fig.savefig(f"{folder1}{fname}.pdf")
+                fname = f"{pred_names[pred_idx]}_{time_idx}_predss_{run_id}"
+
+                fig.savefig(f"{folder1}{fname}.pdf")
 
         time_idx = time_idx + 1
 

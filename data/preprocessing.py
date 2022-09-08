@@ -134,7 +134,10 @@ station_names=['hanko-han-fin-cmems',],
         
     return X, Y, t
 
-def intersect_time(predictor, predictand,):
+#---
+# Intersect time
+#---
+def intersect_time(predictor, predictand, is_prefilling):
     """
     Description:
         Returns data of predictor and predictand in overlapping time-intervall.
@@ -142,6 +145,7 @@ def intersect_time(predictor, predictand,):
     Parameters:
         predictor (xr.DataArray): Predictor values as a timeseries with lat, lon
         predictand (xr.DataArray): Predictand values as a timeseries per station
+        is_prefilling (bool): If the predictor is prefilling of Baltic Sea, e.g. Degerby SL as a proxy
 
     Returns:
         X, Y, t
@@ -155,10 +159,17 @@ def intersect_time(predictor, predictand,):
     #
     # GESLA data is hourly. Needs to be daily, like ERA5. 
     #---
-    predictor_time = pd.to_datetime(predictor.time.values).date
+    import pandas as pd
+    import numpy as np
     predictand_time = pd.to_datetime(predictand.date_time.values).date
-    predictor = predictor.values # Daily data
-    predictand = predictand.values # Hourly data
+    predictor_values = predictor.values # Daily (ERA5) or hourly (Degerby) data
+    predictand_values = predictand.values # Hourly data
+
+    if is_prefilling:
+        predictor_time = pd.to_datetime(predictor.date_time.values).date
+        predictor_values = np.swapaxes(predictor_values, axis1=0, axis2=1)
+    else:
+        predictor_time = pd.to_datetime(predictor.time.values).date
 
     # Choose maximum per day, i.e. if one hour
     # a day indicates an extreme surge, the whole day 
@@ -168,23 +179,23 @@ def intersect_time(predictor, predictand,):
     predictand_dmax = []
     for date in predictor_time:
         time_idx = np.where(predictand_time==date)[0] # Intersection of timeseries'
-        if time_idx.shape[0] == 0:
+        if time_idx.shape[0] == 0: # If no intersection
             time_idx = np.where(predictor_time==date)[0] # Find poistion in (updated) predictor timeseries
-            predictor = np.delete(predictor, time_idx, axis=0) # Update predictor timeseries to match predictand
+            predictor_values = np.delete(predictor_values, time_idx, axis=0) # Update predictor timeseries to match predictand
             predictor_time = np.delete(predictor_time, time_idx, axis=0) # Update predictor timepoints
             print(f"date:{date} at position {time_idx} was deleted as it was in predictor data but not in predictand data") 
         else:
-            dmax = np.max(predictand[:, time_idx], axis=1) # Daily maximum of predictand
+            dmax = np.max(predictand_values[:, time_idx], axis=1) # Daily maximum of predictand
             predictand_dmax.append(dmax)
 
     predictand_dmax = np.array(predictand_dmax)
 
-    X = predictor
+    X = predictor_values
     Y = predictand_dmax
     t = predictor_time
         
     return X, Y, t
-
+    
 def timelag(X, Y, t, timelag):
     """
     Description: 
