@@ -64,6 +64,47 @@ def detrend(df, level="station"):
     """
     return (df - df.groupby(level=level).mean())
 
+def detrend_signal(gesla_predictand, type_):
+    """
+    Description:
+        Detrend GESLA-Dataset either by subtracting mean or linear trend
+    Parameters:
+        gesla_predictand (pd.Series): Gesla dataset at selected station. 
+        type_ (str): "constant" or "linear" for either subtracting mean or linear trend, respectively.
+    Returns:
+        df (pd.Series): Detrended Gesla Dataseries.
+    Note: 
+        Only one station can be selected. This is not grouped by stations.
+        Returns in the format as expected by further modules.
+    """
+    from scipy import signal
+    import pandas as pd
+    import numpy as np
+
+    detrended = signal.detrend(gesla_predictand, type=type_,)
+
+    # Get date_time for index
+    #---
+    date_time = []
+    for index in gesla_predictand.index.values:
+        date = index[1]
+        date_time.append(date)
+
+    # Create new dataframe
+    #---
+    station_idx = np.zeros(detrended.shape).astype(int)
+    df = pd.DataFrame(
+        {"sea_level": detrended},
+        index=[
+            station_idx,
+            date_time,
+        ],
+        
+    )
+    df.index.names = ["station", "date_time"]
+    
+    return df.squeeze()
+
 def apply_dummies(df, percentile=0.95, level="station"):
     """
     Description:

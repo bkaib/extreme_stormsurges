@@ -273,6 +273,51 @@ def combine_timelags(X, Y, timelags):
 
     return X_timelag, Y_timelag
 
+def add_timelag(X, Y, timelags, pred_idx):
+    """
+    Description:
+        Returns combined timelagged predictor data X_timelag for predictand Y_timelag.
+        Shifts predictand data Y according to the maximum timelag given in timelags.
+        Note: Input data X, Y needs to be on the same time-interval (see preprocessing.intersect_time)
+        
+    Parameters:
+        X (np.array, float): Predictor values as a field time series. Shape:(n_labels, lat, lon) or (n_labels, i, ..., k)
+        Y (np.array, float): Predictand at selected stations. Shape:(n_labels, stations)
+        timelags (list): List of all timelags of a model run (e.g. for all combinations of predictors)
+        pred_idx (int): Index of the current predictor
+
+    Returns:
+        X_timelag (np.array, float): Combined timelagged Predictor values in increasing order of timelags, e.g. t=0, t=1,..., Shape:(timelag, n_labels, lat, lon)
+        Y_timelag (np.array, float): Timelagged Predictand at selected stations. Shape:(n_labels, stations)
+    """
+
+    # Initialize
+    #---
+    pred_timelag = timelags[pred_idx]
+
+    # timelags.sort()
+    
+    max_timelag = max(timelags)
+
+    # Get timelagged Predictand 
+    #---
+    Y_timelag = Y[max_timelag:] # In order to have same predictand for all predictors
+
+    # Get timelagged predictors
+    #---
+    X_timelag = []
+
+    # for timelag_ in timelags:
+
+    idx = max_timelag - pred_timelag
+
+    if pred_timelag > 0:
+        X_timelag = X[idx : - pred_timelag]
+    if pred_timelag == 0: 
+        X_timelag = X[idx:]
+
+    return X_timelag, Y_timelag
+
 def convert_timestamp(da, dim):
     """
     Description: 
