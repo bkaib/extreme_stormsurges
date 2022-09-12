@@ -331,7 +331,6 @@ is_station_name,
         #---
         # Scale data if they are on different scales
         #---
-        X_train_unscaled = X_train # Save for plotting predictor maps
         X_test_unscaled = X_test
 
         if is_scaled:
@@ -379,7 +378,7 @@ is_station_name,
         #---
         # Saving the model
         #---
-        print("Save model")
+        print(f"Save model: {model}")
         filename = f'{model_run}_{optimizer}_{run_id}.sav'
         pickle.dump(model, open(f'{folder}{filename}', 'wb'))
 
@@ -389,6 +388,7 @@ is_station_name,
         tic_predmap = time.perf_counter()
 
         if era5_counter != 0: # Do not print predictor maps if only prefilling is used as predictor. Otherwise print predictor maps
+                print(f"Plot predictor maps")
                 visualisation.predictor_maps( # TODO: If only pf is used this should be skipped, e.g. no plotting of importance maps
                         model, X_test, y_test,
                         X_test_unscaled,
