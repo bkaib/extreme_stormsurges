@@ -195,7 +195,59 @@ def intersect_time(predictor, predictand, is_prefilling):
     t = predictor_time
         
     return X, Y, t
-    
+
+def intersect_all_times(predictors, gesla_predictand, range_of_years, subregion, season, preprocess):
+    """
+    """
+    era5_counter = 0
+    for pred_idx, predictor in enumerate(predictors):
+        if predictor == "pf":
+            is_prefilled = True
+        else:
+            is_prefilled = False
+
+        # Load Predictor
+        #---
+        print(f"Load predictor {predictor}")
+        if predictor == "pf":
+            era5_predictor = data_loader.load_pf(season)
+            era5_predictor_tmp = data_loader.load_daymean_era5(range_of_years, subregion, season, predictors[era5_counter-1], preprocess)
+
+            X_, Y_, t_ = intersect_time(era5_predictor_tmp, era5_predictor, is_prefilling=False)
+            
+        else:
+            era5_counter = era5_counter + 1
+            era5_predictor = data_loader.load_daymean_era5(range_of_years, subregion, season, predictor, preprocess) # TODO: Change back to range_of_years
+            era5_predictor = convert_timestamp(era5_predictor, dim="time")
+        
+            X_, Y_, t_ = intersect_time(era5_predictor, gesla_predictand, is_prefilled)
+
+        # Compare to intersections done before and keep intersection of all predictors. Since one predictor was intersected with GESLA
+        # This intersection leads to a time-series with available dates in all predictors and GESLA dataset
+        #---
+        
+        if pred_idx == 0:
+            print("Create tt")
+            tt = np.array(t_)
+            print(f"shape: {tt.shape}")
+        elif (len(tt) > len(t_)):
+            # Intersect two time-series arrays
+            #---
+            idx = []
+            for date in t_:
+                idx.append(np.where(tt == date)[0])
+            print("Update time")
+            tt = tt[idx]
+        elif (len(tt) < len(t_)):
+            idx = []
+            for date in tt:
+                idx.append(np.where(t_ == date)[0])
+            print("Update time")
+            tt = t_[idx]
+        tt = np.array(tt)
+
+    return tt
+
 def timelag(X, Y, t, timelag):
     """
     Description: 
@@ -342,6 +394,44 @@ def convert_timestamp(da, dim):
         da = replace_coords(da, coords_to_replace) # Replace dimension values with new datatype
 
     return da
+
+def get_timeseries(predictor, ts, is_prefilling):
+    """
+    Description: 
+        Returns values of a predictor or dataset that only contains dates given in ts.
+    Parameters:
+        predictor (xarray): Values of predictor
+        ts (list): List of date times
+        is_prefilling (bool): Whether or not the predictor is prefilling (True) or ERA5-Data (False)
+    """
+    import pandas as pd
+    import numpy as np
+    
+    if is_prefilling:
+        t = pd.to_datetime(predictor.date_time.values).date
+    else:
+        t = pd.to_datetime(predictor.time.values).date
+
+    values = predictor.values
+
+    timeseries = []
+    for date in ts:
+        time_idx = np.where(t==date)[0] # Intersection of timeseries'
+        if time_idx.shape[0] == 0: # If no intersection
+            pass
+        else: # If time overlaps add timepoint
+            if is_prefilling:
+                added_value = np.max(values[:, time_idx], axis=1) # Daily maximum of prefilling
+                timeseries.append(added_value)
+            else:
+                added_value = values[time_idx, :, :,] # Daily maximum of predictand
+                timeseries.append(added_value)
+                
+    timeseries = np.array(timeseries)
+    if not is_prefilling:
+        timeseries = timeseries[:, 0, :, :] # Bring to format (time, lon, lat)
+    return timeseries
+
 #---
 # Information about preprocessed datasets
 #---
