@@ -10,6 +10,7 @@ and is embedded in the CLimate INTelligence project.
 # Structure
 data (package): Modules for preprocessing and manipulating data
 model (package): 
+resources (folder): Containing sample folder for resources
 main (ipynb):
 masterthesis (pdf): Theoretical background and model description
 
@@ -17,5 +18,6 @@ masterthesis (pdf): Theoretical background and model description
 This repository does not include the resource folder. In order for everything to run smoothly, 
 include the resource folder containing ERA5 and GESLA Dataset and check the naming conventions of the files. 
 The data package uses fixed naming conventions to load data.
-You can download GESLA and ERA5 from their corresponding websites. 
+You can download GESLA and ERA5 from their corresponding websites. Place the downloaded datasets into corresponding folders. You can just unpack the GESLA3.0_ALL.zip into the resources/gesla/ folder and delete the gesla_data_placeholder.txt
+Keep in mind to check the naming convention of the ERA5 data after using CDO or change the naming conventions in the corrensponding data package and its loader modules
 
