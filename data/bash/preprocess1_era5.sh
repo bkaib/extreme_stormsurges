@@ -2,8 +2,8 @@
 
 # Description:
 # ----------------
-# Apply this script on data stored in D://Ungesicherte_Daten/Masterarbeit/Daten/original.
-# Output of this scipt was stored in resources/preprocess1
+# Apply this script on downloaded ERA5 data
+# Output of this scipt should be stored stored in resources/era5/preprocess1/
 
 # Pseudo-Code:
 # ----------------
