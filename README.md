@@ -18,6 +18,8 @@ main (ipynb): The main call to the software.
 
 masterthesis (pdf): Theoretical background and model description.
 
+mean_pms (ipynb): Additional Notebook to calculate mean predictor maps as as shown in results section of thesis.
+
 # Note
 This repository does not include the resource folder. In order for everything to run smoothly, 
 include the resource folder containing ERA5 and GESLA Dataset and check the naming conventions of the files. 
