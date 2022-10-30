@@ -120,7 +120,6 @@ def importance_map(importance, lons, lats, tflag="", ax=None):
     return fig, ax
 
 def overlay_importance(ax, importance, lats, lons, percentile=99, alpha=0.1, markersize=5, color="k"):
-    # TODO: put into module
     """
     Description:
         Overlays the position of importance above a specified percentile to an axis.
