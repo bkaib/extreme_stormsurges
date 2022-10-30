@@ -151,7 +151,6 @@ def select_season(ds_gesla, season):
     return season_ds
 
 def station_position(gesla_predictand, station_names):
-    # TODO: Put into module
     """
     Description:
         Returns positions longitudes and latitudes of GESLA Stations
