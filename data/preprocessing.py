@@ -400,6 +400,8 @@ def get_timeseries(predictor, ts, is_prefilling):
         predictor (xarray): Values of predictor
         ts (list): List of date times
         is_prefilling (bool): Whether or not the predictor is prefilling (True) or ERA5-Data (False)
+    Return:
+        timeseries (np.array): Dataset that only contains dates given in ts 
     """
     import pandas as pd
     import numpy as np
