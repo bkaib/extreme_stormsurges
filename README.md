@@ -27,3 +27,7 @@ The data package uses fixed naming conventions to load data.
 You can download GESLA and ERA5 from their corresponding websites. Place the downloaded datasets into corresponding folders. You can just unpack the GESLA3.0_ALL.zip into the resources/gesla/ folder and delete the gesla_data_placeholder.txt
 Keep in mind to check the naming convention of the ERA5 data after using CDO or change the naming conventions in the corrensponding data package and its loader modules.
 
+# DOI
+[![DOI](https://zenodo.org/badge/557258431.svg)](https://zenodo.org/badge/latestdoi/557258431)
+
+
